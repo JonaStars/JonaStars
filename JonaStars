@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JonaStars ID System Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #24292e;
+        }
+        .example-box {
+            background-color: #f6f8fa;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #e1e4e8;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f6f8fa;
+        }
+        .note {
+            background-color: #fff8c5;
+            padding: 12px;
+            border-left: 4px solid #f9c513;
+            margin: 15px 0;
+        }
+        code {
+            background-color: #f6f8fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .last-update {
+            color: #586069;
+            font-size: 0.9em;
+            margin-top: 40px;
+            border-top: 1px solid #e1e4e8;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JonaStars ID System</h1>
+    <p>Hey there! Welcome to the ID system documentation. This guide explains how our unique ID generation works and what makes a valid ID in our system.</p>
+
+    <h2>Quick Start</h2>
+    <div class="example-box">
+        Allowed characters:
+        • Letters: P, L, Q, G, R, J, C, U, V
+        • Numbers: 0, 2, 8, 9
+    </div>
+
+    <h2>ID Structure & Rules</h2>
+    <h3>Basic Rules:</h3>
+    <ul>
+        <li>Minimum length: 3 characters</li>
+        <li>IDs get longer as we run out of shorter combinations</li>
+        <li>Each ID must be unique in the system</li>
+    </ul>
+
+    <h2>Length Progression System</h2>
+    <table>
+        <tr>
+            <th>Stage</th>
+            <th>Length</th>
+            <th>Real Examples</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>Starting Point</td>
+            <td>3 chars</td>
+            <td>P02, L28, Q90</td>
+            <td>Most common format for new users</td>
+        </tr>
+        <tr>
+            <td>Second Wave</td>
+            <td>4 chars</td>
+            <td>PL02, QR28, GJ90</td>
+            <td>Used when 3-char IDs run low</td>
+        </tr>
+        <tr>
+            <td>Extended</td>
+            <td>5+ chars</td>
+            <td>PLQ02, GRJ28, CUV90</td>
+            <td>For high-volume systems</td>
+        </tr>
+    </table>
+
+    <h2>Real-world Examples</h2>
+    <div class="example-box">
+    Good IDs:
+    • P02  (basic)
+    • LQ28 (mixed)
+    • GRJ90 (extended)
+    • PLQV028 (complex)
+    
+    Bad IDs:
+    • A1 (wrong chars + too short)
+    • PPP (no numbers)
+    • 123 (invalid numbers)
+    </div>
+
+    <h2>Common Questions</h2>
+    <div class="note">
+        <strong>Q: Why these specific characters?</strong><br>
+        These characters were chosen for clarity and minimal confusion. For example, we skip similar-looking characters like O and 0.
+    </div>
+
+    <h2>Technical Implementation Tips</h2>
+    <ul>
+        <li>Store IDs in uppercase (P02 instead of p02)</li>
+        <li>No spaces allowed in IDs</li>
+        <li>Quick validation regex: <code>/^[PLQGRJCUV][PLQGRJCUV0289]+$/</code></li>
+        <li>Minimum total length: 3 characters</li>
+    </ul>
+
+    <h2>ID Validation Checklist</h2>
+    <table>
+        <tr>
+            <th>Check</th>
+            <th>Example</th>
+            <th>Result</th>
+        </tr>
+        <tr>
+            <td>Only allowed characters?</td>
+            <td>P02 vs A1B</td>
+            <td>✓ vs ✗</td>
+        </tr>
+        <tr>
+            <td>Minimum length (3)?</td>
+            <td>P02 vs P2</td>
+            <td>✓ vs ✗</td>
+        </tr>
+        <tr>
+            <td>At least one letter?</td>
+            <td>P02 vs 028</td>
+            <td>✓ vs ✗</td>
+        </tr>
+    </table>
+
+    <h2>Best Practices</h2>
+    <ul>
+        <li>Always validate IDs before saving</li>
+        <li>Keep a log of generated IDs</li>
+        <li>Use caching for faster ID validation</li>
+        <li>Consider implementing a retry mechanism for failed generations</li>
+    </ul>
+
+    <div class="last-update">
+        Last updated: 2025-02-14
+        <br>
+        Maintainer: JonaStars
+    </div>
+</body>
+</html>
