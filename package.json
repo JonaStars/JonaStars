@@ -2,7 +2,7 @@
   "name": "react",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://jonastars.github.io/JonaStars",
+  "homepage": "https://jonastars.github.io/JonaStars/",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
