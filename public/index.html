@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/images/logo/jonastars.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1E1E1E" />
+    <meta
+      name="description"
+      content="Click Counter & Chat - Un juego interactivo con chat global creado por JonaStars"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="%PUBLIC_URL%/images/logo/jonastars.png"
+    />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Consolas:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Click Counter & Chat | JonaStars" />
+    <meta
+      property="og:description"
+      content="Juego interactivo con chat global y sistema de puntuación creado por JonaStars"
+    />
+    <meta
+      property="og:image"
+      content="%PUBLIC_URL%/images/logo/jonastars.png"
+    />
+    <meta property="og:url" content="https://jonastars.github.io" />
+    <meta property="og:site_name" content="Click Counter & Chat" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@JonaStars" />
+    <meta name="twitter:title" content="Click Counter & Chat | JonaStars" />
+    <meta
+      name="twitter:description"
+      content="Juego interactivo con chat global y sistema de puntuación creado por JonaStars"
+    />
+    <meta
+      name="twitter:image"
+      content="%PUBLIC_URL%/images/logo/jonastars.png"
+    />
+
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="Click Counter & Chat" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Click Counter & Chat" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#1E1E1E" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- Preload Critical Assets -->
+    <link
+      rel="preload"
+      href="%PUBLIC_URL%/images/logo/jonastars.png"
+      as="image"
+    />
+
+    <!-- SEO Meta Tags -->
+    <meta name="author" content="JonaStars" />
+    <meta
+      name="keywords"
+      content="click counter, chat, juego, interactivo, JonaStars, javascript game"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Prevent Flash of Unstyled Content -->
+    <style>
+      :root {
+        --primary-color: #00ff00;
+        --background-color: #1e1e1e;
+        --text-color: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+        font-family: "Consolas", monospace;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--background-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        z-index: 9999;
+      }
+
+      .loading-screen img {
+        width: 100px;
+        height: 100px;
+        margin-right: 1rem;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .loading-screen::after {
+        content: "_";
+        animation: blink 1s infinite;
+        margin-left: 4px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .loading-screen::after {
+          animation: none;
+        }
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+    </style>
+
+    <title>Click Counter & Chat | JonaStars</title>
+  </head>
+  <body>
+    <noscript>
+      <div
+        style="color: var(--primary-color); text-align: center; padding: 20px"
+      >
+        <img
+          src="%PUBLIC_URL%/images/logo/jonastars.png"
+          alt="JonaStars Logo"
+          style="width: 100px; height: 100px; margin-bottom: 1rem"
+        />
+        <p>Necesitas habilitar JavaScript para ejecutar esta aplicación.</p>
+        <p>You need to enable JavaScript to run this app.</p>
+      </div>
+    </noscript>
+
+    <div id="root">
+      <div class="loading-screen">
+        <img
+          src="%PUBLIC_URL%/images/logo/jonastars.png"
+          alt="JonaStars Logo"
+          width="100"
+          height="100"
+        />
+        <span
+          >Cargando Click Counter & Chat<span class="visually-hidden"
+            >...</span
+          ></span
+        >
+      </div>
+    </div>
+
+    <!-- Preconexiones para mejorar el rendimiento -->
+    <link rel="preconnect" href="https://firebaseapp.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
+  </body>
+</html>
