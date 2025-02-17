@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Redirigiendo... | Click Counter & Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#1E1E1E">
+    
+    <!-- SEO -->
+    <meta name="description" content="Click Counter & Chat - Un juego interactivo con chat global creado por JonaStars">
+    <meta name="robots" content="noindex, follow">
+    
+    <style>
+        :root {
+            --primary-color: #00ff00;
+            --background-color: #1e1e1e;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            font-family: "Consolas", monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.3));
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loading div {
+            position: absolute;
+            border: 4px solid var(--primary-color);
+            opacity: 1;
+            border-radius: 50%;
+            animation: loading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .loading div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+
+        @keyframes loading {
+            0% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                top: 0px;
+                left: 0px;
+                width: 72px;
+                height: 72px;
+                opacity: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .loading div {
+                animation: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <!-- Script de redirección -->
+    <script type="text/javascript">
+        (function() {
+            var pathSegmentsToKeep = 1;
+            var l = window.location;
+
+            function redirect() {
+                try {
+                    l.replace(
+                        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+                        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+                        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+                        l.hash
+                    );
+                } catch (e) {
+                    console.error('Error durante la redirección:', e);
+                    window.location.href = 'https://jonastars.github.io/JonaStars/';
+                }
+            }
+
+            // Intentar redirección después de 1 segundo
+            setTimeout(redirect, 1000);
+        })();
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="/JonaStars/images/logo/jonastars.png" alt="JonaStars Logo" class="logo">
+        <h1>Redirigiendo...</h1>
+        <p>Serás redirigido automáticamente a la página principal.</p>
+        <p>Si no eres redirigido automáticamente, <a href="/JonaStars/" style="color: var(--primary-color);">haz clic aquí</a>.</p>
+        <div class="loading">
+            <div></div>
+            <div></div>
+        </div>
+        <noscript>
+            <p style="color: #ff4444;">
+                JavaScript está deshabilitado. Por favor, 
+                <a href="/JonaStars/" style="color: #ff4444; text-decoration: underline;">
+                    haz clic aquí para ir a la página principal
+                </a>.
+            </p>
+        </noscript>
+    </div>
+    
+    <!-- Error tracking -->
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('Error en 404.html:', {
+                mensaje: msg,
+                url: url,
+                linea: line,
+                columna: col,
+                error: error,
+                ubicacion: window.location.href
+            });
+            // Redirección de respaldo en caso de error
+            window.location.href = 'https://jonastars.github.io/JonaStars/';
+            return false;
+        };
+    </script>
+</body>
+</html>
