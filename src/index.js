@@ -19,9 +19,9 @@ const firebaseConfig = {
 };
 
 // Inicialización de Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const database = getDatabase(firebaseApp);
 
 // Elemento raíz para React 18
 const container = document.getElementById("root");
@@ -30,46 +30,71 @@ const root = createRoot(container);
 // Función para formatear la fecha UTC con el formato específico requerido
 const formatUTCDateTime = () => {
   const now = new Date();
-  const formatted = `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${now.getUTCFullYear()}-${String(
-    now.getUTCMonth() + 1
-  ).padStart(2, "0")}-${String(now.getUTCDate()).padStart(2, "0")} ${String(
-    now.getUTCHours()
-  ).padStart(2, "0")}:${String(now.getUTCMinutes()).padStart(2, "0")}:${String(
-    now.getUTCSeconds()
-  ).padStart(2, "0")}\nCurrent User's Login: JonaStars\n`;
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(now.getUTCDate()).padStart(2, "0");
+  const hours = String(now.getUTCHours()).padStart(2, "0");
+  const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(now.getUTCSeconds()).padStart(2, "0");
 
-  return formatted;
+  return `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${year}-${month}-${day} ${hours}:${minutes}:${seconds}\nCurrent User's Login: JonaStars\n`;
 };
 
-// Remover la pantalla de carga
-const loadingScreen = document.querySelector(".loading-screen");
-if (loadingScreen) {
-  loadingScreen.style.opacity = "0";
-  setTimeout(() => loadingScreen.remove(), 500);
-}
+// Remover la pantalla de carga con animación
+const removeLoadingScreen = () => {
+  const loadingScreen = document.querySelector(".loading-screen");
+  if (loadingScreen) {
+    loadingScreen.style.opacity = "0";
+    loadingScreen.style.transition = "opacity 0.5s ease";
+    setTimeout(() => loadingScreen.remove(), 500);
+  }
+};
 
 // Configuración del tema oscuro
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches
-) {
-  document.documentElement.setAttribute("data-theme", "dark");
-}
+const setDarkTheme = (isDark) => {
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+};
+
+// Inicializar tema basado en preferencias del sistema
+const initializeTheme = () => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme) {
+    setDarkTheme(savedTheme === "dark");
+  } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    setDarkTheme(true);
+  }
+};
 
 // Observador de cambios en el tema del sistema
-window
-  .matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", (event) => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      event.matches ? "dark" : "light"
-    );
-  });
+const setupThemeObserver = () => {
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (event) => {
+      setDarkTheme(event.matches);
+    });
+};
 
-// Manejo de errores global
-window.onerror = function (message, source, lineno, colno, error) {
-  console.error("Error Global:", { message, source, lineno, colno, error });
-  return false;
+// Manejo de errores global mejorado
+const setupErrorHandling = () => {
+  window.onerror = function (message, source, lineno, colno, error) {
+    console.error("Error Global:", {
+      message,
+      source,
+      lineno,
+      colno,
+      error,
+      timestamp: new Date().toISOString(),
+    });
+    return false;
+  };
+
+  window.addEventListener("unhandledrejection", function (event) {
+    console.error("Promesa no manejada:", {
+      reason: event.reason,
+      timestamp: new Date().toISOString(),
+    });
+  });
 };
 
 // Actualizar el título con la hora UTC
@@ -77,69 +102,106 @@ const updateTitle = () => {
   document.title = `Click Counter & Chat | ${formatUTCDateTime()}`;
 };
 
-// Actualizar el título cada segundo
-const titleInterval = setInterval(updateTitle, 1000);
+// Configurar temporizador para actualizar el título
+let titleInterval;
 
 // Prevenir el zoom en dispositivos móviles
-document.addEventListener("gesturestart", function (e) {
-  e.preventDefault();
-});
+const preventZoom = () => {
+  document.addEventListener("gesturestart", (e) => e.preventDefault());
+  document.addEventListener("touchmove", (e) => {
+    if (e.scale !== 1) e.preventDefault();
+  }, { passive: false });
+};
 
-// Renderizar la aplicación
-root.render(
-  <React.StrictMode>
-    <App
-      auth={auth}
-      database={database}
-      formatUTCDateTime={formatUTCDateTime}
-    />
-  </React.StrictMode>
-);
+// Configuración del Service Worker para PWA
+const registerServiceWorker = () => {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      const swUrl = `${process.env.PUBLIC_URL || ""}/JonaStars/service-worker.js`;
+      navigator.serviceWorker
+        .register(swUrl)
+        .then((registration) => {
+          console.log("SW registrado:", registration);
+          
+          registration.addEventListener("updatefound", () => {
+            const newWorker = registration.installing;
+            newWorker.addEventListener("statechange", () => {
+              if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                if (window.confirm("Hay una nueva versión disponible. ¿Deseas actualizar?")) {
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch((error) => {
+          console.error("Error al registrar el SW:", error);
+        });
+    });
+  }
+};
 
-// Service Worker para PWA
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then((registration) => {
-        console.log("SW registrado:", registration);
-      })
-      .catch((registrationError) => {
-        console.log("SW registro fallido:", registrationError);
-      });
+// Configuración de la detección de conexión
+const setupConnectivityDetection = () => {
+  const updateOnlineStatus = () => {
+    const isOnline = navigator.onLine;
+    document.body.classList.toggle("offline", !isOnline);
+    console.log(isOnline ? "Conexión restaurada." : "Conexión perdida. Trabajando en modo offline.");
+  };
+
+  window.addEventListener("online", updateOnlineStatus);
+  window.addEventListener("offline", updateOnlineStatus);
+};
+
+// Inicializar la aplicación
+const startApp = () => {
+  // Configurar tema
+  initializeTheme();
+  setupThemeObserver();
+
+  // Configurar manejo de errores
+  setupErrorHandling();
+
+  // Iniciar actualización del título
+  titleInterval = setInterval(updateTitle, 1000);
+
+  // Configurar prevención de zoom
+  preventZoom();
+
+  // Configurar Service Worker
+  registerServiceWorker();
+
+  // Configurar detección de conexión
+  setupConnectivityDetection();
+
+  // Configurar prevención de cierre accidental
+  window.addEventListener("beforeunload", (event) => {
+    event.preventDefault();
+    event.returnValue = "¿Estás seguro de que quieres salir?";
   });
-}
 
-// Función de limpieza para evitar memory leaks
+  // Renderizar la aplicación
+  root.render(
+    <React.StrictMode>
+      <App
+        auth={auth}
+        database={database}
+        formatUTCDateTime={formatUTCDateTime}
+      />
+    </React.StrictMode>
+  );
+
+  // Remover la pantalla de carga
+  removeLoadingScreen();
+};
+
+// Limpiar recursos al cerrar
 window.addEventListener("beforeunload", () => {
-  clearInterval(titleInterval);
+  if (titleInterval) clearInterval(titleInterval);
 });
 
-// Detección de conexión
-window.addEventListener("online", function () {
-  document.body.classList.remove("offline");
-});
-
-window.addEventListener("offline", function () {
-  document.body.classList.add("offline");
-});
-
-// Prevenir el cierre accidental
-window.addEventListener("beforeunload", (event) => {
-  event.preventDefault();
-  event.returnValue = "¿Estás seguro de que quieres salir?";
-});
-
-// Manejo de actualizaciones de la PWA
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (
-      window.confirm("Hay una nueva versión disponible. ¿Deseas actualizar?")
-    ) {
-      window.location.reload();
-    }
-  });
-}
+// Iniciar la aplicación
+startApp();
 
 // Exportar variables y funciones útiles
 export { auth, database, formatUTCDateTime };
